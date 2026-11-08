@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c1312">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>:root{padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}body{margin:0}</style>
+<title>ฟ้าผ่าอีกแล้ว</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chonburi&family=Noto+Serif+Thai:wght@400;600&family=Sarabun:wght@400;600&display=swap">
+<style>
+/* Layout: ink-wash scroll. Masthead of layered peaks, then a story column beside a ledger of the character. */
+:root{
+  --ink:#0c1312;
+  --ink-2:#121c1a;
+  --ink-3:#192624;
+  --line:#2a3d39;
+  --mist:#d3ddd7;
+  --mist-2:#93a9a0;
+  --jade:#7fc9b0;
+  --jade-d:#2f6b5a;
+  --gold:#d0ab5f;
+  --blood:#c2403a;
+  --storm:#92a8e6;
+  --hp:#e2806c;
+  --f-display:'Chonburi','Noto Serif Thai',serif;
+  --f-read:'Noto Serif Thai','Sarabun',serif;
+  --f-ui:'Sarabun','Noto Sans Thai',sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--ink);color:var(--mist);font-family:var(--f-ui);font-size:16px;line-height:1.6}
+button{font:inherit;color:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding-block:0 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mast{position:relative;padding:36px 0 70px;overflow:hidden}
+.mast .peaks{position:absolute;left:0;right:0;bottom:0;width:100%;height:64px;pointer-events:none}
+.peaks .p1{fill:var(--ink-3)}
+.peaks .p2{fill:var(--ink-2)}
+.eyebrow{margin:0 0 6px;font-size:13px;letter-spacing:.14em;color:var(--jade)}
+h1{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(34px,7vw,56px);line-height:1.15;text-wrap:balance}
+.brand{display:flex;align-items:center;gap:16px}.logo{border-radius:18px;flex:none;border:1px solid var(--line)}.tag{margin:4px 0 0;color:var(--gold);font-size:15px}
+.lede{margin:10px 0 0;max-width:34em;color:var(--mist-2)}
+h2,h3{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance}
+h2{font-size:22px}
+h3{font-size:17px}
+.panel{background:var(--ink-2);border:1px solid var(--line);border-radius:4px;padding:16px}
+.stack{display:flex;flex-direction:column;gap:16px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--mist-2)}
+.small{font-size:14px}
+label.f{display:block;font-size:14px;color:var(--mist-2);margin-bottom:6px}
+input[type=text]{width:100%;max-width:340px;background:var(--ink-3);border:1px solid var(--line);color:var(--mist);padding:9px 12px;border-radius:4px;font:inherit}
+:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
+.btn{background:var(--ink-3);border:1px solid var(--line);border-radius:4px;padding:9px 16px;cursor:pointer;transition:border-color .15s,background .15s}
+.btn:hover{border-color:var(--jade)}
+.btn.pri{background:var(--jade);border-color:var(--jade);color:var(--ink);font-weight:600}
+.btn.pri:hover{background:#97d8c2}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.seg button{background:transparent;border:0;padding:6px 14px;cursor:pointer;color:var(--mist-2)}
+.seg button[aria-pressed=true]{background:var(--jade);color:var(--ink);font-weight:600}
+.pool{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--ink-2);border:1px solid var(--line);border-radius:4px;padding:10px 16px}
+.pool b{font-family:var(--f-display);font-weight:400;font-size:26px;color:var(--gold)}
+.pool.neg b{color:var(--blood)}
+.pips{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:10px 0}
+.pips button{height:34px;border:1px solid var(--line);background:var(--ink-3);border-radius:2px;cursor:pointer;padding:0;font-size:13px;color:var(--mist-2)}
+.pips button.on{background:var(--jade-d);border-color:var(--jade);color:var(--mist)}
+.pips button.sel{background:var(--jade);color:var(--ink);font-weight:600}
+.cost{font-family:var(--f-display);color:var(--gold);font-size:15px}
+.cost.neg{color:var(--jade)}
+.fates{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.fate{text-align:left;background:var(--ink-3);border:1px solid var(--line);border-radius:4px;padding:12px;cursor:pointer;display:flex;flex-direction:column;gap:6px}
+.fate[aria-pressed=true]{border-color:var(--jade);background:#16302b}
+.seal{display:inline-block;font-family:var(--f-display);font-size:15px;line-height:1;padding:5px 8px;border:2px solid currentColor;border-radius:2px;transform:rotate(-2deg);letter-spacing:.04em}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.stat{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--ink-3);border:1px solid var(--line);border-radius:4px;padding:10px 12px}
+.stat .n{min-width:0}
+.stat .ctl{display:flex;align-items:center;gap:10px;flex:none}
+.stat .ctl button{width:32px;height:32px;border:1px solid var(--line);background:var(--ink-2);border-radius:4px;cursor:pointer}
+.stat .ctl button:hover{border-color:var(--jade)}
+.stat .ctl output{min-width:24px;text-align:center;font-family:var(--f-display);font-size:18px}
+.rolled{background:var(--ink-3);border:1px dashed var(--gold);border-radius:4px;padding:12px;margin-top:10px}
+.topbar{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,2fr);gap:16px;align-items:center}
+.topbar .who h2{overflow-wrap:anywhere}
+.bars{display:grid;gap:8px}
+.barrow{display:grid;grid-template-columns:70px minmax(0,1fr) auto;gap:10px;align-items:center;font-size:14px}
+.bar{height:9px;background:var(--ink-3);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;width:var(--w);background:var(--c)}
+.num{font-variant-numeric:tabular-nums;color:var(--mist-2)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;margin-top:16px;align-items:start}
+.story{min-width:0}
+.story .head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px}
+.prose p{font-family:var(--f-read);font-size:17px;line-height:1.85;margin:0 0 12px;max-width:40em}
+.prose p.pick{font-family:var(--f-ui);font-size:14px;color:var(--gold);margin-bottom:6px}
+.prose p.intro{font-size:18px;color:#eef5f0}
+.prose p.dim{color:var(--mist-2)}
+.actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:8px}
+.act{text-align:left;background:var(--ink-3);border:1px solid var(--line);border-radius:4px;padding:12px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.act:hover{border-color:var(--jade)}
+.act b{font-family:var(--f-display);font-weight:400;font-size:16px}
+.act span{font-size:13px;color:var(--mist-2)}
+.skillrow{display:grid;gap:8px;margin-top:12px}
+.sk{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;background:var(--ink-3);border:1px solid var(--line);border-radius:4px;padding:8px 12px}
+.sk .nm{min-width:0;overflow-wrap:anywhere}
+.mini{display:inline-grid;grid-template-columns:repeat(10,5px);gap:2px}
+.mini i{display:block;height:10px;background:var(--line)}
+.mini i.on{background:var(--jade)}
+.choices{display:grid;gap:8px;margin-top:6px}
+.choice{display:flex;gap:10px;align-items:baseline;width:100%;text-align:left;background:var(--ink-3);border:1px solid var(--line);border-radius:4px;padding:12px 14px;cursor:pointer;transition:border-color .15s}
+.choice:hover{border-color:var(--jade)}
+.chip{flex:none;font-size:12px;padding:1px 7px;border:1px solid currentColor;border-radius:2px;letter-spacing:.04em}
+.chip.demon{color:var(--blood)}
+.chip.guardian{color:var(--jade)}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.side h3{margin-bottom:8px}
+.kv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:baseline;font-size:14px}
+.kv .t{font-size:12px;color:var(--mist-2);grid-column:1/-1;margin-top:-4px}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sgrid div{background:var(--ink-3);border:1px solid var(--line);border-radius:4px;padding:8px 10px;display:flex;justify-content:space-between;gap:8px}
+.sgrid b{font-family:var(--f-display);font-weight:400}
+.karma{position:relative;height:8px;border-radius:2px;background:linear-gradient(90deg,var(--blood),var(--line) 50%,var(--jade));margin:12px 0 4px}
+.karma i{position:absolute;top:-4px;width:4px;height:16px;background:var(--mist);left:var(--x);transform:translateX(-50%)}
+.chron{list-style:none;margin:8px 0 0;padding:0;max-height:260px;overflow-y:auto;display:grid;gap:6px;font-size:14px}
+.chron li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px}
+.chron li b{font-weight:400;color:var(--mist-2)}
+.chron li.good span{color:var(--jade)}
+.chron li.bad span{color:var(--hp)}
+summary{cursor:pointer;font-family:var(--f-display);font-size:17px}
+.end h2{font-size:clamp(26px,5vw,38px);margin:4px 0 6px}
+.end .cause{font-family:var(--f-read);color:var(--mist-2);margin:0 0 12px}
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:14px 0}
+.sum div{background:var(--ink-3);border:1px solid var(--line);border-radius:4px;padding:10px 12px}
+.sum b{display:block;font-family:var(--f-display);font-weight:400;font-size:20px;color:var(--gold)}
+@media (max-width:820px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .topbar{grid-template-columns:minmax(0,1fr)}
+  .barrow{grid-template-columns:62px minmax(0,1fr) auto}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <p class="eyebrow">เกมจำลองชีวิตแห่งยุทธภพ</p>
+    <div class="brand"><img class="logo" src="data:image/png;base64,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" alt="โลโก้ฟ้าผ่าอีกแล้ว" width="84" height="84"><div><h1>ฟ้าผ่าอีกแล้ว</h1><p class="tag">เกิดมาซวยแค่ไหน ก็ยังเป็นจอมยุทธ์ได้</p></div></div>
+    <p class="lede">เกิดมาพร้อมรากวิญญาณ กระดูกวิญญาณ และชะตาที่ฟ้าขีดไว้ แล้วเลือกทางเดินของตัวเองไปจนวันสุดท้าย</p>
+    <svg class="peaks" viewBox="0 0 800 64" preserveAspectRatio="none" aria-hidden="true">
+      <path class="p1" d="M0 64V40L90 14 150 36 240 4 330 38 420 18 520 42 620 8 700 34 800 16V64Z"/>
+      <path class="p2" d="M0 64V52L120 30 220 50 340 26 460 52 580 34 700 52 800 38V64Z"/>
+    </svg>
+  </header>
+  <main id="app"></main>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const ri=(a,b)=>Math.floor(rnd(a,b+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const chance=p=>Math.random()<p;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function wpick(w){let t=w.reduce((a,b)=>a+b,0),r=Math.random()*t;for(let i=0;i<w.length;i++){r-=w[i];if(r<=0)return i}return w.length-1}
+
+/* ---------- ข้อมูลเกม ---------- */
+const ROOTS=[
+ ['รากหยาบกระด้าง','ปราณแทบไม่ไหลผ่านร่าง ฝึกอะไรก็ช้ากว่าใคร'],
+ ['รากหินดิน','เชื่องช้าแต่ยังไม่สิ้นหวัง'],
+ ['รากสามัญ','เหมือนคนทั่วไปในยุทธภพ'],
+ ['รากห้าธาตุผสม','ธาตุปนเปกัน ฝึกได้พอตัว'],
+ ['รากสองธาตุ','ปราณเริ่มไหลลื่นเป็นสาย'],
+ ['รากวิญญาณเลิศ','ซึมซับปราณฟ้าดินได้ดีเยี่ยม'],
+ ['รากวิญญาณสวรรค์','หนึ่งในหมื่นคนถึงจะมี'],
+ ['รากวิญญาณมังกร','ปราณหมุนวนเหมือนมังกรขดตัว'],
+ ['รากเทพวิญญาณ','ฟ้าดินเปิดทางให้เอง'],
+ ['รากกำเนิดไร้ขอบเขต','รากที่ไม่ควรมีในโลกมนุษย์']
+];
+const ROOT_MULT=[.5,.65,.8,1,1.25,1.55,1.9,2.4,3.1,4];
+const BONES=[
+ ['กระดูกเปราะ','แตกง่าย เจ็บป่วยบ่อย'],
+ ['กระดูกธรรมดา','ไม่มีอะไรโดดเด่น'],
+ ['กระดูกแกร่ง','ทนทานกว่าคนทั่วไป'],
+ ['กระดูกเหล็ก','เริ่มต้านทานพิษอ่อน ๆ ได้'],
+ ['กระดูกทองแดง','เสียงกระดูกกระทบกันเหมือนระฆัง'],
+ ['กระดูกเงิน','พิษส่วนใหญ่ไม่ระคายอีกต่อไป'],
+ ['กระดูกทอง','ร่างกายแกร่งเกินมนุษย์'],
+ ['กระดูกหยก','พิษทุกชนิดไม่อาจทำอันตราย'],
+ ['กระดูกมังกร','กระดูกที่สืบทอดจากสายเลือดโบราณ'],
+ ['กระดูกวัชระอมตะ','ร่างกายที่ฟ้าดินยังต้องหลีกทาง']
+];
+const COST=[0,1,1,2,3,4,6,8,11,15];
+const REALMS=[
+ ['ปุถุชน',0],['ปราณเริ่มต้น',25],['ปราณหมุนเวียน',70],['ฐานปราณ',170],['หลอมกาย',380],
+ ['ยอดฝีมือ',850],['ปรมาจารย์',1900],['หลอมวิญญาณ',4200],['ไร้เทียมทาน',9500],['เซียนยุทธ์',21000]
+];
+const FATES={
+ normal:{n:'ชะตาสามัญ',s:'สามัญ',cost:0,c:'--mist-2',d:'ฟ้าไม่ได้ขีดอะไรไว้เป็นพิเศษ ทุกอย่างขึ้นกับการเลือกของท่าน'},
+ lucky:{n:'บุตรสวรรค์',s:'สวรรค์',cost:6,c:'--gold',d:'โชคดีเข้าข้าง พบวาสนาบ่อยกว่าผู้อื่น และทอยโชคได้ดีขึ้น'},
+ guardian:{n:'ผู้พิทักษ์ธรรม',s:'ธรรม',cost:3,c:'--jade',d:'มีทางเลือกพิเศษเมื่อพบผู้ตกทุกข์ และได้ผลบุญจากการทำดีมากขึ้น'},
+ unlucky:{n:'ดาวอาภัพฟ้าผ่า',s:'ฟ้าผ่า',cost:-5,c:'--storm',d:'เคราะห์ร้ายตามติด เดินอยู่ดี ๆ ฟ้าอาจผ่า หลังคาอาจถล่ม สะพานอาจพัง แลกกับแต้มคืน 5 แต้ม'},
+ demon:{n:'ชะตามารสวรรค์',s:'มาร',cost:-2,c:'--blood',d:'ความกระหายเลือดสะสมทุกปี ปล่อยไว้อาจกลืนกินจนฆ่าไม่เลือกหน้า แต่มีทางเลือกพิเศษคือ ฆ่า และ ดูดพลัง'}
+};
+const FATE_KEYS=Object.keys(FATES);
+const SK={
+ fist:{n:'หมัดเหล็กผ่าลม',c:1},
+ step:{n:'ย่างก้าวเมฆา',c:0},
+ sword:{n:'กระบี่สายลมใต้',c:1},
+ staff:{n:'พลองพิทักษ์ภูผา',c:1},
+ palm:{n:'ฝ่ามือปราณวารี',c:1},
+ heal:{n:'คัมภีร์ปราณรักษา',c:0},
+ iron:{n:'กายาเหล็กไหล',c:0},
+ blood:{n:'วิชาดูดโลหิตอสูร',c:1}
+};
+const LEARNABLE=['step','sword','staff','palm','heal','iron'];
+const QUIET=[
+ 'ฝนตกหนักทั้งเดือน ท่านอยู่ในเรือนและนับปราณที่ไหลตามลมหายใจ',
+ 'ปีนี้ไร้ลมไร้คลื่น ผู้คนในยุทธภพต่างหลบอยู่ในบ้านของตน',
+ 'ท่านฟังนักเล่านิทานเล่าถึงยอดฝีมือผู้ถอนต้นไม้ด้วยมือเดียว',
+ 'หิมะแรกร่วงลงมา ท่านยืนดูมันโดยไม่คิดเรื่องวิชาเลยสักครั้ง',
+ 'ตลาดนัดคึกคัก ข่าวลือเรื่องคัมภีร์ลับแพร่ไปทั่ว แต่ไม่มีใครรู้ที่มา',
+ 'อีกปีหนึ่งผ่านไปอย่างเงียบ ๆ'
+];
+const NAMES1=['เฟิง','หลง','เยว่','ชิง','ไป๋','เหอ','หลิน','ซู','เมิ่ง','อวี่'];
+const NAMES2=['อวิ๋น','เจี้ยน','หาน','เสวี่ย','หมิง','จื่อ','เทียน','ฉือ','ลั่ว','หลัน'];
+const randName=()=>pick(NAMES1)+pick(NAMES2);
+
+/* ---------- สถานะ ---------- */
+let C=null,S=null,ph='create',turn={paras:[],ev:null},ui={pickSkill:false};
+
+function maxHp(){return Math.round(40+S.bone*13+S.stats.str*5+S.realm*22+S.bonusHp+(S.skills.iron?S.skills.iron.lvl*6:0))}
+function poisonRes(){return clamp((S.bone-3)*.2,0,1)}
+function power(){let p=S.realm*14+S.stats.str*2+S.bone*1.5+6;for(const id in S.skills){if(SK[id].c)p+=S.skills[id].lvl*3}if(S.skills.iron)p+=S.skills.iron.lvl;return p}
+function note(t,kind){S.chron.push({age:S.age,text:t,kind:kind||''})}
+function karma(n){if(S.fate==='guardian'&&n>0)n=Math.round(n*1.5);S.karma=clamp(S.karma+n,-100,100)}
+function rep(n){S.rep=Math.max(0,S.rep+n)}
+function stat(k,n){S.stats[k]=clamp(S.stats[k]+n,1,20)}
+function bloodUp(n){S.blood=clamp(S.blood+n,0,100)}
+function gainInner(n){const v=Math.max(1,Math.round(n*ROOT_MULT[S.root-1]*rnd(.85,1.15)));S.inner+=v;return v}
+function hurt(n,cause){S.hp-=n;if(S.hp<=0){S.hp=0;if(!S.cause)S.cause=cause||'บาดเจ็บสาหัส'}}
+function hit(lo,hi,cause){const d=Math.max(1,Math.round(maxHp()*rnd(lo,hi)*(1-S.bone*.04)));hurt(d,cause);return d}
+function luckRoll(b){return chance(b+S.stats.luck*.03+(S.fate==='lucky'?.15:0)-(S.fate==='unlucky'?.1:0))}
+function witRoll(b){return chance(b+S.stats.wit*.04)}
+function poison(frac,cause){const r=poisonRes();if(r>=1)return{dmg:0,imm:true};const d=Math.max(1,Math.round(maxHp()*frac*(1-r)));hurt(d,cause||'พิษร้ายกัดกินจนสิ้นใจ');return{dmg:d,imm:false}}
+function fight(ep,mult,cause){const me=power()*(mult||1)*rnd(.7,1.3),him=ep*rnd(.8,1.2),win=me>=him;const d=Math.round((win?ep*rnd(0,.3):ep*rnd(.8,1.6))*(1-S.bone*.04));hurt(d,cause||'ตายในการต่อสู้');return{win,dmg:d}}
+function need(l){return 20+l*15}
+function skillXp(id,amt){const sk=S.skills[id];sk.xp+=amt;let m='';while(sk.lvl<10&&sk.xp>=need(sk.lvl)){sk.xp-=need(sk.lvl);sk.lvl++;m+=` ${SK[id].n} ก้าวสู่ขั้น ${sk.lvl}`;note(`${SK[id].n} ก้าวสู่ขั้น ${sk.lvl}`,'good')}return m}
+function learn(id){if(S.skills[id]){skillXp(id,25);return `ท่านเข้าใจ${SK[id].n}ลึกซึ้งขึ้นอีกมาก`}S.skills[id]={lvl:1,xp:0};note(`ได้เรียนรู้ ${SK[id].n}`,'good');return `ท่านได้เรียนรู้${SK[id].n}`}
+function learnRandom(){const p=LEARNABLE.filter(i=>!S.skills[i]);if(!p.length){const k=pick(Object.keys(S.skills).filter(i=>i!=='blood'));return `ท่านฝึกซ้ำจนเข้าใจ${SK[k].n}ลึกขึ้น${skillXp(k,30)}`}return learn(pick(p))}
+function realmName(){return REALMS[S.realm][0]}
+function syncRealm(){let i=0;for(let r=0;r<REALMS.length;r++){if(S.inner>=REALMS[r][1])i=r}
+  if(i>S.realm){S.realm=i;note(`ทะลวงสู่ขั้น${REALMS[i][0]}`,'good');turn.paras.push(`ปราณในกายกระเพื่อมแรง ท่านทะลวงสู่ขั้น${REALMS[i][0]}`);
+    if([6,8,9].includes(i)&&!S.flags['t'+i]){S.flags['t'+i]=1;S.pendingTrib=i}}
+  S.hp=Math.min(S.hp,maxHp())}
+
+/* ---------- เหตุการณ์ ---------- */
+function misfortune(){
+  const m=pick([
+   ()=>{const d=hit(.3,.6,'ถูกฟ้าผ่ากลางทุ่งโล่งโดยไม่มีเมฆสักก้อน');let t='ท่านเดินอยู่ดี ๆ ท้องฟ้าแจ่มใสไร้เมฆ แล้วสายฟ้าก็ผ่าลงกลางศีรษะโดยไม่มีเหตุผลใด ๆ ทั้งสิ้น';if(S.hp>0){if(S.bone>=7)t+=` แต่กระดูกวิญญาณดูดสายฟ้าไว้ กลายเป็นปราณ +${gainInner(30)}`;else t+=` พลังชีวิตหายไป ${d}`}note('ฟ้าผ่าโดยไม่มีสาเหตุ','bad');return t},
+   ()=>{const d=hit(.12,.25,'ถูกกระเบื้องหลังคาหล่นทับศีรษะ');note('กระเบื้องหลังคาหล่นใส่','bad');return `กระเบื้องหลังคาหลุดร่วงลงมากระแทกศีรษะ พลังชีวิตหายไป ${d}`},
+   ()=>{const d=hit(.15,.3,'ถูกม้าตื่นลากรถทับ');note('ม้าตื่นชนล้ม','bad');return `ม้าตื่นลากรถพุ่งเข้าหา ท่านถูกชนล้มกลิ้ง พลังชีวิตหายไป ${d}`},
+   ()=>{const p=poison(.28,'ถูกงูพิษกัดจนสิ้นใจ');note('งูพิษกัด','bad');return p.imm?'งูพิษที่ไม่น่ามีในหมู่บ้านนี้กัดข้อเท้าท่าน แต่เขี้ยวหักคาผิวหนัง กระดูกวิญญาณไม่ยอมให้พิษผ่าน':`งูพิษที่ไม่น่ามีในหมู่บ้านนี้กัดข้อเท้าท่าน พลังชีวิตหายไป ${p.dmg}`},
+   ()=>{if(S.skills.step&&S.skills.step.lvl>=3){note('สะพานพัง แต่เหยียบน้ำรอด','good');return 'สะพานไม้ที่ท่านข้ามทุกวันพังลงใต้เท้า แต่ย่างก้าวเมฆาพาท่านเหยียบเศษไม้ข้ามฝั่งไปได้ทัน'}const d=hit(.2,.35,'ตกสะพานพังจมน้ำ');note('สะพานพัง','bad');return `สะพานไม้ที่ท่านข้ามทุกวันพังลงใต้เท้า ท่านตกลงไปกระแทกโขดหิน พลังชีวิตหายไป ${d}`}
+  ]);
+  return m();
+}
+function rampage(pre){const k=ri(8,40);S.kills+=k;karma(-25);rep(6);bloodUp(-100);S.blood=25;const v=gainInner(60+k*3);hurt(Math.round(maxHp()*rnd(.05,.25)),'ถูกผู้คนรุมสังหารหลังความกระหายเลือดครอบงำ');note(`ความกระหายเลือดกลืนกิน ฆ่าไป ${k} ชีวิต`,'bad');return `${pre}ท่านเสียสติไปชั่วเวลาหนึ่ง เมื่อได้สติ รอบตัวเงียบสนิท มีผู้ล้มลง ${k} ราย ปราณ +${v} แต่ชื่อของท่านถูกเล่าด้วยเสียงกระซิบ`}
+const RAMPAGE={id:'rampage',title:'ความกระหายเลือด',
+  intro:()=>'ดวงตาของท่านขุ่นแดง เสียงกระซิบในหัวดังขึ้นทุกที เลือดในกายเดือดพล่านเหมือนมีบางสิ่งต้องการออกมา ความกระหายเลือดเกินกว่าจะกลั้นไว้ได้แล้ว',
+  ch:[
+   {t:'กัดฟันต้านด้วยสติ',go:()=>{const p=clamp(.3+S.stats.wit*.03-S.blood/400+(S.partner?.1:0),.1,.85);if(chance(p)){S.blood=Math.max(0,S.blood-35);stat('wit',1);note('ต้านความกระหายเลือดได้','good');return 'ท่านนั่งขัดสมาธิกลางสายฝน ท่องคำสอนเก่าซ้ำไปมาจนเสียงกระซิบจางหาย ความกระหายเลือดลดลง'}return rampage('ท่านกัดฟันจนเลือดซึมเต็มปาก แต่ความกระหายแรงกว่า ')}},
+   {t:'ปล่อยให้มันกลืนกิน',go:()=>rampage('')}
+  ]};
+function tribEvent(r){return{id:'trib',title:'ฟ้าทัณฑ์',
+  intro:()=>`เมฆดำม้วนตัวเหนือศีรษะ สายฟ้าสีม่วงเลื้อยอยู่ในก้อนเมฆ ฟ้าทัณฑ์แห่งขั้น${REALMS[r][0]}มาถึงแล้ว`,
+  ch:[
+   {t:'ฝืนรับด้วยร่างเนื้อ',go:()=>trib(r,1,'')},
+   {t:'ใช้กายาเหล็กไหลต้านทาน',cond:()=>S.skills.iron,go:()=>trib(r,1-S.skills.iron.lvl*.06,'ท่านรวบกายาเหล็กไหลเป็นเกราะ ')},
+   {t:'หนีเข้าถ้ำ ยอมเสียปราณส่วนหนึ่ง',go:()=>{const l=Math.round(S.inner*.12);S.inner-=l;S.realm=0;for(let i=0;i<REALMS.length;i++){if(S.inner>=REALMS[i][1])S.realm=i}note('หนีฟ้าทัณฑ์','bad');return `ท่านพุ่งเข้าถ้ำ สายฟ้าฟาดหินถล่มอยู่ด้านนอก เมฆสลายไป แต่ปราณหลุดจากร่าง ${l}`}},
+   {t:'ดูดโลหิตสัตว์ป่ารอบเขามาเสริมกาย',only:'demon',go:()=>{karma(-10);bloodUp(20);return trib(r,.55,'ท่านกวาดชีวิตสัตว์ทั้งป่ามาหุ้มร่างเป็นเกราะเลือด ')}}
+  ]}}
+function trib(r,f,pre){let d=Math.max(5,Math.round(maxHp()*(.55-S.bone*.03)*f*(S.fate==='unlucky'?1.5:1)*rnd(.8,1.2)));hurt(d,'ถูกฟ้าทัณฑ์ผ่าจนวิญญาณสลาย');
+  if(S.hp>0){S.bonusHp+=15;const v=gainInner(60*r);rep(8);note(`ผ่านฟ้าทัณฑ์ขั้น${REALMS[r][0]}`,'good');return `${pre}สายฟ้าเก้าสายฟาดลงมา พลังชีวิตหายไป ${d} แต่ร่างถูกหลอมใหม่ พลังชีวิตสูงสุด +15 ปราณ +${v}`}
+  return `${pre}สายฟ้าสายสุดท้ายผ่าลงมา ร่างของท่านสลายไปพร้อมเมฆดำ`}
+const sparFight=(name,ep,mult)=>fight(ep,mult,`พ่ายแพ้ต่อ${name}`);
+const EVENTS=[
+{id:'cat',title:'แมวบาดเจ็บ',age:[6,60],w:3,tag:'moral',
+ intro:()=>'ริมตรอกหลังตลาดมีแมวตัวหนึ่งนอนขดอยู่ ขาหลังมีแผลลึก มันเงยหน้ามองท่านเงียบ ๆ ไม่ร้องสักแอะ',
+ ch:[
+  {t:'พันแผลให้มัน',go:()=>{karma(3);let t='ท่านฉีกชายเสื้อพันแผลให้แมว มันเลียนิ้วท่านแล้วเดินกะเผลกจากไป';if(luckRoll(.1)){t+=` ก่อนลับตา เงาของมันแยกเป็นสองหาง ทิ้งไอวิญญาณให้ท่านดูดซับ ปราณ +${gainInner(14)}`;stat('luck',1)}return t}},
+  {t:'เดินผ่านไป',go:()=>'ท่านเดินผ่านตรอกนั้นไปโดยไม่หันกลับมามอง'},
+  {t:'ใช้ปราณธรรมรักษาแผลให้มัน',only:'guardian',go:()=>{karma(5);rep(1);return `ปราณธรรมะไหลเข้าแผล เนื้อสมานในพริบตา แมวถูหัวกับขาท่านสามครั้ง ปราณหมุนกลับมาหาท่าน +${gainInner(8)}`}},
+  {t:'ฆ่ามัน',only:'demon',go:()=>{karma(-6);bloodUp(15);return `ท่านบีบคอแมวเพียงเสี้ยววินาที ไออุ่นของเลือดไหลผ่านนิ้ว ปราณ +${gainInner(5)} มือของท่านสั่นเพราะความพอใจ ไม่ใช่เพราะความกลัว`}},
+  {t:'ดูดพลังของมัน',only:'demon',go:()=>{karma(-8);bloodUp(25);let t=`ท่านวางฝ่ามือบนหลังแมว พลังชีวิตของมันไหลเข้ามาเป็นสาย ปราณ +${gainInner(16)}`;if(chance(.25))t+=` มันคืออสูรวิญญาณจำแลง ยังมีแก่นพลังซ่อนอยู่ ปราณ +${gainInner(30)}`;return t+' ร่างของแมวแห้งเหี่ยวเป็นผงในมือ'}}
+ ]},
+{id:'beggar',title:'ขอทานเฒ่า',age:[7,45],w:3,tag:'boon',
+ intro:()=>'ขอทานเฒ่าผมขาวนั่งอยู่ข้างทาง ยื่นชามบิ่นมาด้วยมือสั่น ๆ ขอข้าวสักคำ',
+ ch:[
+  {t:'แบ่งอาหารให้',go:()=>{karma(3);if(luckRoll(.22)){note('ขอทานเฒ่าคือยอดฝีมือ','good');return `เฒ่ากินจนหมดแล้วหัวเราะ ท่านเพิ่งรู้ว่าเขาคือยอดฝีมือปลอมตัว เขาชี้ไปที่ท่านครั้งเดียว ปราณก็ไหลเข้าร่าง +${gainInner(40)} และสอนวิชาให้ ${learnRandom()}`}stat('cha',1);return 'เฒ่ากินอาหารอย่างเอร็ดอร่อย อวยพรให้ท่านด้วยภาษาโบราณ แล้วเดินจากไป ท่านรู้สึกใจเบาขึ้น'}},
+  {t:'ไล่ไปให้พ้น',go:()=>{karma(-2);return 'ท่านไล่เฒ่าไปไกล ๆ เขาไม่ได้โกรธ แค่มองท่านนานกว่าที่ควร'}},
+  {t:'ดูดพลังของเฒ่า',only:'demon',go:()=>{if(S.realm<4&&chance(.55)){karma(-10);hurt(Math.round(maxHp()*.55),'ถูกยอดฝีมือปลอมตัวฟาดจนตายด้วยฝ่ามือเดียว');return 'ท่านคว้าข้อมือเฒ่า แต่ฝ่ามือของเขากระแทกอกท่านกระเด็นไปไกลสามจั้ง เขาคือยอดฝีมือปลอมตัว เขาเดินจากไปโดยไม่เหลียวหลัง'}karma(-10);bloodUp(25);note('ดูดพลังขอทานเฒ่า','bad');return `พลังของเฒ่าไหลเข้ามาอย่างช้า ๆ เหมือนน้ำจากเขื่อนที่แตก ปราณ +${gainInner(70)}`}}
+ ]},
+{id:'bandit',title:'โจรบุกหมู่บ้าน',age:[9,70],w:3,tag:'danger',wander:1,
+ intro:()=>'เสียงม้าและเสียงตะโกนดังขึ้นที่ปากทางหมู่บ้าน โจรกลุ่มหนึ่งถืออาวุธบุกเข้ามาปล้น ชาวบ้านวิ่งหนีกันกระจาย',
+ ch:[
+  {t:'ออกไปสู้เพื่อชาวบ้าน',go:()=>{const f=sparFight('พวกโจร',20+S.age*.8);if(f.win){karma(3);rep(4);return `ท่านเข้าขวางหน้าโจร ต่อสู้จนพวกมันถอยหนี ชาวบ้านก้มกราบขอบคุณ พลังชีวิตหายไป ${f.dmg}`}return `ท่านพุ่งเข้าสู้แต่กำลังไม่พอ ถูกโจรรุมจนต้องล้มลง พลังชีวิตหายไป ${f.dmg}`}},
+  {t:'ซ่อนตัวรอให้ผ่านไป',go:()=>{karma(-2);return 'ท่านหมอบอยู่ในกองฟางจนเสียงม้าจางหาย เมื่อออกมา บ้านหลายหลังว่างเปล่า'}},
+  {t:'ฆ่าให้เกลี้ยงทุกคน',only:'demon',go:()=>{const f=sparFight('พวกโจร',20+S.age*.8,1.3);karma(-12);bloodUp(20);S.kills+=ri(5,12);rep(2);if(f.win)return `ท่านพุ่งเข้าไปกลางวง เสียงกรีดร้องหยุดลงทีละคน ปราณ +${gainInner(20)} ชาวบ้านที่รอดมองท่านด้วยสายตากลัวพอ ๆ กับที่มองโจร`;return `ท่านบ้าคลั่งเกินไปจนเปิดช่องให้ถูกฟัน พลังชีวิตหายไป ${f.dmg} โจรครึ่งหนึ่งหนีไปได้`}}
+ ]},
+{id:'sect',title:'สำนักรับศิษย์',age:[11,19],w:6,once:1,tag:'boon',
+ intro:()=>'สามสำนักประกาศรับศิษย์ในเมืองพร้อมกัน เขาเมฆขาวเข้มงวดเรื่องราก กระบี่ลมใต้รับทุกคนที่ขยัน ส่วนนิกายโลหิตอัสดงแอบเรียกท่านเข้าไปในซอยมืด',
+ ch:[
+  {t:'สมัครเขาเมฆขาว (สายธรรมะ)',go:()=>{if(S.root<3)return 'ผู้คุมสอบตรวจรากของท่านแล้วส่ายหน้า ท่านต้องเดินกลับบ้านด้วยหัวใจหนัก';S.flags.sect='เขาเมฆขาว';karma(4);rep(3);stat('wit',1);note('เข้าเขาเมฆขาว','good');return `ท่านผ่านการทดสอบและได้เป็นศิษย์เขาเมฆขาว ${learn('palm')}`}},
+  {t:'สมัครกระบี่ลมใต้ (สายกลาง)',go:()=>{S.flags.sect='กระบี่ลมใต้';stat('str',1);rep(2);note('เข้ากระบี่ลมใต้','good');return `ผู้อาวุโสรับท่านโดยไม่ถามอะไรมาก ${learn('sword')}`}},
+  {t:'เข้านิกายโลหิตอัสดง (สายมาร)',go:()=>{S.flags.sect='โลหิตอัสดง';karma(-8);bloodUp(10);rep(1);note('เข้านิกายโลหิตอัสดง','bad');return `ท่านลงนามด้วยหยดเลือดตัวเอง ${learn('blood')} ปราณ +${gainInner(10)}`}},
+  {t:'ไม่เข้าสำนักใด เลือกพเนจรเอง',go:()=>{stat('luck',1);return `ท่านออกเดินคนเดียวพร้อมห่อผ้าใบเดียว ${chance(.5)?learn('step'):'ทางยังยาว แต่ท่านรู้สึกเป็นอิสระ'}`}}
+ ]},
+{id:'cave',title:'ถ้ำลึกลับ',age:[13,70],w:3,tag:'danger',wander:1,
+ intro:()=>'ท่านพบปากถ้ำหนึ่งซ่อนอยู่หลังเถาวัลย์ มีลมเย็นพัดออกมาพร้อมกลิ่นแปลก ๆ ที่ผนังมีรอยสลักเก่าแก่',
+ ch:[
+  {t:'เข้าไปสำรวจ',go:()=>{if(luckRoll(.35)){note('พบคัมภีร์ในถ้ำ','good');return `ท้ายถ้ำมีโครงกระดูกนั่งขัดสมาธิ ในมือกำคัมภีร์ไว้ ${learnRandom()}`}if(chance(.5)){const p=poison(.35,'สูดควันพิษในถ้ำจนสิ้นใจ');if(p.imm){return `ก๊าซพิษพุ่งเข้าใส่ แต่กระดูกวิญญาณของท่านย่อยพิษเป็นปราณ +${gainInner(8)}`}note('ถูกพิษในถ้ำ','bad');return `ก๊าซสีเขียวพุ่งออกจากรอยแยก พลังชีวิตหายไป ${p.dmg}`}const f=sparFight('สัตว์ในถ้ำ',28+S.age*.7);return f.win?`สัตว์ร้ายตัวหนึ่งพุ่งออกมาจากเงามืด ท่านล้มมันได้ พลังชีวิตหายไป ${f.dmg}`:`สัตว์ร้ายตัวหนึ่งพุ่งออกมาจากเงามืด ท่านต้องหนีออกมาทั้งเลือด พลังชีวิตหายไป ${f.dmg}`}},
+  {t:'ไม่เสี่ยง เดินจากไป',go:()=>'ท่านถอยออกมาจากปากถ้ำช้า ๆ ลมเย็นยังตามหลังมาอีกพักหนึ่ง'}
+ ]},
+{id:'banquet',title:'งานเลี้ยงวางยา',age:[15,90],w:2,tag:'danger',
+ intro:()=>'เจ้าสำนักท้องถิ่นเชิญท่านร่วมงานเลี้ยง กลิ่นสุราหอมเกินกว่าปกติ ผู้เสิร์ฟยิ้มกว้างผิดธรรมชาติ',
+ ch:[
+  {t:'ดื่มรวดเดียวหมดจอก',go:()=>{const p=poison(.45,'ดื่มสุราผสมพิษจนสิ้นใจ');if(p.imm){rep(3);note('ดื่มพิษไม่เป็นอะไร','good');return 'ท่านดื่มรวดเดียวหมดจอก เจ้าภาพรอดูอาการ แต่พิษไหลผ่านกระดูกวิญญาณโดยไม่เหลือร่องรอย เขาเริ่มเหงื่อตก'}note('โดนวางยาพิษ','bad');return `ท่านดื่มจนหมด แล้วโลกก็เอียงข้าง พลังชีวิตหายไป ${p.dmg}`}},
+  {t:'แอบทดสอบด้วยเข็มเงิน',go:()=>{if(witRoll(.45)){rep(2);return 'เข็มเงินดำสนิทในสุรา ท่านวางจอกลงเบา ๆ แล้วบอกว่าไม่ถนัดดื่ม ใบหน้าเจ้าภาพซีดลง'}const p=poison(.45,'ดื่มสุราผสมพิษจนสิ้นใจ');return p.imm?'ท่านลองเข็มเงินไม่ทัน แต่ดื่มไปแล้วก็ไม่เป็นอะไร พิษไม่ระคายกระดูกวิญญาณ':`เข็มเงินในมือท่านยังไม่ทันดำ ท่านก็ดื่มไปแล้ว พลังชีวิตหายไป ${p.dmg}`}},
+  {t:'ลุกออกจากงาน',go:()=>{karma(0);return 'ท่านแสร้งว่าไม่สบาย ลุกออกก่อนใครจะทันห้าม'}}
+ ]},
+{id:'tourney',title:'ศึกประลองยุทธ์',age:[16,70],w:3,tag:'boon',wander:1,
+ intro:()=>'ลานกลางเมืองมีป้ายประกาศศึกประลองยุทธ์ประจำปี ผู้ชนะจะได้ชื่อเสียงและรางวัล เจ้าสำนักผู้จัดนั่งดูอยู่บนแท่นสูง',
+ ch:[
+  {t:'ลงแข่งสามรอบ',go:()=>{let w=0,dmg=0;for(let i=0;i<3&&S.hp>0;i++){const f=sparFight('คู่ต่อสู้ในศึกประลอง',30+S.age*.7);dmg+=f.dmg;if(f.win)w++;else break}rep(w*3);if(w===3){rep(8);note('ชนะเลิศศึกประลอง','good');return `ท่านชนะทั้งสามรอบและคว้าตำแหน่งชนะเลิศ ${learnRandom()} พลังชีวิตหายไป ${dmg}`}return `ท่านชนะ ${w} รอบ ก่อนพ่ายแพ้ พลังชีวิตหายไป ${dmg}`}},
+  {t:'ชมการประลองจากข้างสนาม',go:()=>{const k=pick(Object.keys(S.skills).filter(i=>i!=='blood'));return `ท่านนั่งดูทุกท่วงท่าอย่างตั้งใจ ${skillXp(k,20)||'ได้ความเข้าใจใหม่ในวิชาที่ฝึกอยู่'}`}},
+  {t:'ท้าเจ้าสำนักผู้จัดต่อหน้าทุกคน',go:()=>{const f=sparFight('เจ้าสำนักผู้จัดศึก',70+S.age*.5);if(f.win){rep(10);return `ทั้งลานเงียบกริบ เมื่อท่านยืนอยู่เหนือเจ้าสำนัก ปราณ +${gainInner(30)} พลังชีวิตหายไป ${f.dmg}`}return `ท่านถูกฟาดกระเด็นตกแท่น เสียงหัวเราะดังลั่นลาน พลังชีวิตหายไป ${f.dmg}`}}
+ ]},
+{id:'manual',title:'คัมภีร์เก่า',age:[10,80],w:2,tag:'boon',wander:1,
+ intro:()=>'ในร้านขายของเก่า ท่านพบคัมภีร์ปกหนังซีดเซียวเล่มหนึ่ง ตัวอักษรเลือนบางจนอ่านได้ไม่ครบ เจ้าของร้านไม่รู้ว่ามันคืออะไร',
+ ch:[
+  {t:'ฝึกตามคัมภีร์ทันที',go:()=>{if(witRoll(.45))return `ท่านตีความอักษรที่ขาดหายได้อย่างถูกต้อง ${learnRandom()}`;const d=hit(.25,.35,'ปราณปั่นป่วนจากฝึกคัมภีร์ผิดวิธี');return `ท่านตีความผิดไปหนึ่งบรรทัด ปราณตีกลับเข้าอก พลังชีวิตหายไป ${d}`}},
+  {t:'เก็บไว้ศึกษาช้า ๆ',go:()=>{if(chance(.3))stat('wit',1);return `ท่านใช้เวลาทั้งปีอ่านทีละตัวอักษร ปราณ +${gainInner(10)}`}}
+ ]},
+{id:'master',title:'ผู้อาวุโสแอบมอง',age:[8,60],w:2,tag:'boon',
+ intro:()=>'ขณะท่านฝึกวิชาอยู่ริมทาง ยอดฝีมือผู้หนึ่งยืนมองอยู่ไกล ๆ ยิ้มบาง ๆ ราวกับกำลังประเมินพรสวรรค์ของท่าน',
+ ch:[
+  {t:'คุกเข่าขอเป็นศิษย์',go:()=>{if(chance(clamp(.3+S.stats.cha*.04+S.root*.03,0,.9))){note('ได้อาจารย์ใหม่','good');return `เขาพยักหน้าช้า ๆ แล้วตบไหล่ท่านเบา ๆ ปราณ +${gainInner(20)} ${learnRandom()}`}return 'เขาส่ายหน้า บอกว่ายังไม่ถึงเวลา แล้วหายไปกับสายลม'}},
+  {t:'ท้าประลองเพื่อพิสูจน์ตัวเอง',go:()=>{const f=sparFight('ผู้อาวุโสปริศนา',45+S.age*.9);if(f.win){rep(3);return `ท่านชนะอย่างฉิวเฉียด เขาหัวเราะแล้วมอบวิชาให้ ${learnRandom()} พลังชีวิตหายไป ${f.dmg}`}return `เขายกมือเดียวก็ทำให้ท่านล้มลง พลังชีวิตหายไป ${f.dmg}`}},
+  {t:'ลอบโจมตีเพื่อดูดพลังเขา',only:'demon',go:()=>{if(S.realm<4){karma(-8);hurt(Math.round(maxHp()*.5),'ถูกยอดฝีมือสังหารขณะลอบโจมตี');return 'ท่านพุ่งเข้าจากด้านหลัง แต่เขาไม่เคยอยู่ที่ที่ท่านคิด ฝ่ามือเดียวพาท่านกระเด็นไปไกล'}karma(-12);bloodUp(25);return `ท่านจับข้อมือเขาได้ ปราณของเขาทะลักเข้าร่าง ปราณ +${gainInner(80)}`}},
+  {t:'โค้งคำนับแล้วฝึกต่อ',go:()=>'ท่านโค้งคำนับแล้วฝึกต่อโดยไม่ลดมือลง เขาจากไปเงียบ ๆ'}
+ ]},
+{id:'revenge',title:'ศัตรูเก่าตามล้าง',age:[22,95],w:5,tag:'danger',cond:()=>S.kills>0||S.karma<-20,
+ intro:()=>'ญาติของผู้ที่ท่านเคยทำร้ายตามมาถึงหน้าประตู ถือป้ายไว้อาลัยและอาวุธ ดวงตาแดงก่ำ',
+ ch:[
+  {t:'ออกไปสู้',go:()=>{const f=sparFight('ผู้ล้างแค้น',40+S.age*.9+S.kills*.4);if(f.win){karma(-2);return `ท่านปราบผู้ล้างแค้นได้ แต่ไม่ได้รู้สึกชนะ พลังชีวิตหายไป ${f.dmg}`}return `ผู้ล้างแค้นมีความโกรธเป็นอาวุธ ท่านถูกฟันเข้าที่ไหล่ พลังชีวิตหายไป ${f.dmg}`}},
+  {t:'หนีด้วยย่างก้าว',go:()=>{const p=clamp(.4+(S.skills.step?S.skills.step.lvl*.06:0),0,.95);if(chance(p))return 'ท่านหายเข้าไปในม่านหมอกก่อนพวกเขาจะทันเห็น';const d=hit(.1,.25,'ถูกผู้ล้างแค้นไล่ทันและปลิดชีพ');return `ท่านหนีไม่พ้น คมมีดเฉี่ยวหลัง พลังชีวิตหายไป ${d}`}},
+  {t:'ก้มหัวขอโทษและชดใช้',go:()=>{karma(6);rep(-2);return 'ท่านวางอาวุธลงและขอโทษเต็มปาก พวกเขาไม่ให้อภัย แต่ก็ไม่ลงมือ ท่านรู้สึกเบาขึ้นอย่างน่าแปลก'}},
+  {t:'ล้างแค้นให้สิ้นซาก',only:'demon',go:()=>{karma(-20);bloodUp(25);S.kills+=ri(3,9);return `ท่านไม่เหลือใครไว้เล่าเรื่องนี้ ปราณ +${gainInner(80)}`}}
+ ]},
+{id:'romance',title:'คนที่ถูกใจ',age:[18,45],w:3,once:1,tag:'boon',
+ intro:()=>'ในงานเทศกาลโคมไฟ ท่านพบคนผู้หนึ่งยืนอยู่หน้าแผงขายโคม ใครเดินผ่านก็อดหันกลับมามองไม่ได้ ท่านรู้สึกเหมือนหัวใจจังหวะเปลี่ยน',
+ ch:[
+  {t:'ก้าวเข้าไปทักทาย',go:()=>{if(chance(clamp(.35+S.stats.cha*.05,0,.9))){S.partner=pick(['เสี่ยวหลาน','อาหมิง','ชิงเยว่','จื่อหาน']);S.blood=Math.max(0,S.blood-10);stat('luck',1);note(`พบคู่ชีวิต ${S.partner}`,'good');return `ทั้งคืนท่านคุยกับ${S.partner}จนโคมไฟดับ ตั้งแต่นั้นมาท่านมีที่ให้กลับ`}return 'คำตอบคือรอยยิ้มสุภาพกับการส่ายหน้า ท่านเดินกลับไปพร้อมโคมไฟที่ซื้อมาเอง'}},
+  {t:'ปฏิเสธใจตัวเอง เพื่อเส้นทางยุทธ์',go:()=>`ท่านเดินผ่านไปโดยไม่เหลียวมอง กลับไปนั่งสมาธิทั้งคืน ปราณ +${gainInner(8)}`}
+ ]},
+{id:'duel',title:'ยอดฝีมือมาท้าประลอง',age:[30,100],w:3,tag:'boon',cond:()=>S.realm>=4,
+ intro:()=>'ยอดฝีมือจากแดนไกลเดินมาถึงหน้าบ้านท่าน ประกาศก้องว่ามาเพื่อพิสูจน์ชื่อเสียงของท่านด้วยมือตัวเอง',
+ ch:[
+  {t:'รับคำท้า',go:()=>{const f=sparFight('ยอดฝีมือผู้มาท้า',62+S.realm*14);if(f.win){rep(10);return `การประลองสะเทือนไปทั้งหุบเขา ท่านเป็นฝ่ายยืนอยู่ ปราณ +${gainInner(60)} พลังชีวิตหายไป ${f.dmg}`}return `เขาแข็งแกร่งกว่าที่คิด ท่านถูกอัดจนกระอักเลือด พลังชีวิตหายไป ${f.dmg}`}},
+  {t:'ปฏิเสธอย่างสุภาพ',go:()=>{rep(-1);return 'ท่านบอกว่ามีสิ่งที่สำคัญกว่าชื่อเสียง เขาจากไปพร้อมรอยยิ้มเยาะ'}}
+ ]},
+{id:'beast',title:'อสูรร้ายกลางป่า',age:[12,90],w:3,tag:'danger',wander:1,
+ intro:()=>'เสียงคำรามต่ำดังก้องผ่านต้นไม้ อสูรร้ายตัวใหญ่เท่าเกวียนเดินออกมาจากพุ่มไม้ ดวงตาจับจ้องมาที่ท่าน',
+ ch:[
+  {t:'สู้กับมัน',go:()=>{const f=sparFight('อสูรร้าย',28+S.age*.75);if(f.win)return `ท่านล้มอสูรลงได้ ปราณ +${gainInner(12)} พลังชีวิตหายไป ${f.dmg}`;return `เขี้ยวของอสูรฉีกไหล่ท่าน พลังชีวิตหายไป ${f.dmg}`}},
+  {t:'หนีไปทางหน้าผา',go:()=>{if(chance(clamp(.4+(S.skills.step?S.skills.step.lvl*.07:0),0,.95)))return 'ท่านกระโดดข้ามหุบแคบก่อนที่เขี้ยวจะถึง อสูรคำรามอยู่อีกฝั่ง';const d=hit(.12,.28,'ถูกอสูรร้ายไล่ทันกลางป่า');return `ท่านหนีไม่ทัน กรงเล็บเฉี่ยวหลัง พลังชีวิตหายไป ${d}`}},
+  {t:'ดูดแก่นอสูรเมื่อมันล้ม',only:'demon',go:()=>{const f=sparFight('อสูรร้าย',28+S.age*.75,1.25);if(f.win){karma(-4);bloodUp(18);return `เมื่อมันล้ม ท่านแนบมือลงบนอกที่ยังอุ่น แก่นพลังไหลเข้ามา ปราณ +${gainInner(40)}`}return `อสูรสู้กลับแรงกว่าที่คิด พลังชีวิตหายไป ${f.dmg}`}}
+ ]},
+{id:'plague',title:'โรคระบาดในหมู่บ้าน',age:[8,70],w:2,tag:'moral',
+ intro:()=>'หมู่บ้านข้างเคียงเกิดไข้ประหลาด ผู้คนนอนซมอยู่ริมถนน หมอกลัวเกินกว่าจะเข้าไป เสียงไอแห้ง ๆ ดังเป็นระยะ',
+ ch:[
+  {t:'เข้าไปช่วยรักษา',go:()=>{const ok=S.skills.heal||witRoll(.45);if(ok){karma(5);rep(4);const p=poison(.15,'ติดโรคระบาดตายในหมู่บ้าน');return `ท่านต้มยา เช็ดตัว ดูแลทั้งเดือน ผู้คนรอดมาได้ ${p.imm?'และโรคก็ไม่แตะต้องท่านเลย':`ท่านติดไข้เองเล็กน้อย พลังชีวิตหายไป ${p.dmg}`}`}const p=poison(.2,'ติดโรคระบาดตายในหมู่บ้าน');return `ท่านลองทุกวิธีที่รู้ แต่โรคเกินกำลัง ${p.imm?'ท่านออกมาทั้งที่ไม่ได้อะไรกลับไป':`ท่านติดไข้ พลังชีวิตหายไป ${p.dmg}`}`}},
+  {t:'ชำระโรคด้วยปราณธรรม',only:'guardian',go:()=>{karma(8);rep(5);return `ปราณธรรมะไหลจากฝ่ามือสู่ผู้ป่วยทีละคน ไข้จางหายภายในสามวัน ${S.skills.heal?'':learn('heal')}`}},
+  {t:'ผ่านไปโดยไม่แวะ',go:()=>{karma(-1);return 'ท่านเดินอ้อมไปไกลแล้วไม่หันกลับมา เสียงไอตามหลังท่านไปอยู่หลายวัน'}}
+ ]},
+{id:'temptation',title:'ชายชุดดำถือคัมภีร์แดง',age:[16,55],w:2,tag:'moral',cond:()=>!S.skills.blood,
+ intro:()=>'ชายชุดดำคนหนึ่งตามท่านมาจนถึงซอยเปลี่ยว ยื่นคัมภีร์สีแดงเข้มให้ บอกว่าวิชานี้จะพาท่านไปไกลกว่าสำนักใดในแผ่นดิน',
+ ch:[
+  {t:'รับคัมภีร์ไว้',go:()=>{karma(-6);bloodUp(10);note('รับคัมภีร์มาร','bad');return `ท่านรับมาแล้วชายคนนั้นก็หายไปในเงา ${learn('blood')}`}},
+  {t:'ปฏิเสธ',go:()=>{karma(1);return 'ท่านปฏิเสธเสียงเรียบ ชายชุดดำยิ้มบาง ๆ แล้วหายเข้าไปในเงา'}},
+  {t:'ฉีกคัมภีร์ต่อหน้าเขา',go:()=>{karma(4);rep(2);return 'ท่านฉีกคัมภีร์เป็นสองท่อนต่อหน้าเขา เศษกระดาษไหม้เป็นสีเลือดก่อนตกถึงพื้น'}}
+ ]},
+{id:'elixir',title:'ตลาดมืดขายยาเม็ด',age:[18,90],w:2,tag:'danger',wander:1,
+ intro:()=>'ในตรอกลึกของตลาดมืด พ่อค้าผู้หนึ่งอวดยาเม็ดสีแปลก ๆ บอกว่ากินเม็ดเดียวเท่ากับฝึกสามปี แต่ราคาแปลกและไม่มีใครเคยเห็นผู้ซื้อกลับมา',
+ ch:[
+  {t:'ซื้อมากิน',go:()=>{const r=Math.random();if(r<.5)return `ยาเม็ดละลายในท้อง ปราณพุ่งขึ้นทันที +${gainInner(40)}`;if(r<.8){const p=poison(.4,'กินยาเม็ดตลาดมืดจนสิ้นใจ');if(p.imm)return `ยาเป็นพิษ แต่กระดูกวิญญาณของท่านกลืนมันเป็นปราณ +${gainInner(20)}`;note('กินยาพิษจากตลาดมืด','bad');return `ยาที่กินไปคือพิษแท้ ๆ พลังชีวิตหายไป ${p.dmg}`}return 'ยาเม็ดนั้นเป็นแค่แป้งผสมสีเท่านั้น ท่านเสียเงินไปเปล่า ๆ'}},
+  {t:'ไม่ซื้อ',go:()=>'ท่านส่ายหน้าและเดินออกจากตรอก เสียงพ่อค้าขายของต่อดังตามหลัง'}
+ ]},
+{id:'war',title:'สงครามธรรมะ-มาร',age:[28,80],w:2,tag:'danger',cond:()=>S.realm>=2,
+ intro:()=>'สงครามระหว่างพันธมิตรสายธรรมะกับกองกำลังสายมารปะทุขึ้น ทุกสำนักถูกเรียกให้เลือกข้าง ไม่มีใครอยู่เฉยได้นาน',
+ ch:[
+  {t:'ร่วมรบฝั่งธรรมะ',go:()=>{const f=sparFight('ทัพมาร',60+S.age*.4);karma(5);rep(6);return f.win?`ท่านนำศิษย์ตีฝ่าแนวข้าศึกจนแตก ปราณ +${gainInner(40)} พลังชีวิตหายไป ${f.dmg}`:`ท่านต้านศัตรูไว้ได้ครึ่งวันแล้วถอย พลังชีวิตหายไป ${f.dmg}`}},
+  {t:'ร่วมรบฝั่งมาร',go:()=>{const f=sparFight('ทัพธรรมะ',60+S.age*.4);karma(-8);bloodUp(15);rep(5);S.kills+=ri(3,10);return f.win?`ท่านฝ่าวงล้อมได้ ปราณ +${gainInner(45)} พลังชีวิตหายไป ${f.dmg}`:`ท่านถูกบีบจนต้องหนี พลังชีวิตหายไป ${f.dmg}`}},
+  {t:'หลบลี้หนีสงคราม',go:()=>{karma(-2);return 'ท่านพาตัวเองหายไปในชนบท จนกว่าเสียงกลองศึกจะสงบ'}}
+ ]},
+{id:'spring',title:'บ่อน้ำหล่อกระดูก',age:[14,80],w:1,tag:'boon',cond:()=>S.bone<10,
+ intro:()=>'ท่านพบบ่อน้ำใสเย็นเฉียบซ่อนอยู่ลึกในหุบเขา ผิวน้ำเรืองแสงเขียวอ่อน ๆ ตำนานเล่าว่าผู้ที่แช่ตัวอาจเปลี่ยนกระดูกได้',
+ ch:[
+  {t:'ลงแช่ทั้งร่าง',go:()=>{if(luckRoll(.5)){S.bone++;note(`กระดูกวิญญาณเลื่อนเป็น ${BONES[S.bone-1][0]}`,'good');return `กระดูกทุกท่อนในร่างลั่นเป็นจังหวะ ท่านรู้ว่ามันเปลี่ยนไปแล้ว กระดูกวิญญาณเลื่อนเป็น ${BONES[S.bone-1][0]}`}const d=hit(.05,.12,'จมน้ำในบ่อเย็นเฉียบ');return `น้ำเย็นเฉียบจนปราณแข็ง ท่านโผล่ขึ้นมาหอบ ไม่ได้อะไรเลย พลังชีวิตหายไป ${d}`}},
+  {t:'ไม่กล้าเสี่ยง',go:()=>'ท่านยืนมองผิวน้ำเรืองแสงอยู่นาน แล้วเดินกลับตามทางเดิม'}
+ ]},
+{id:'fruit',title:'ผลไม้หล่อราก',age:[14,80],w:1,tag:'boon',cond:()=>S.root<10,
+ intro:()=>'กลางหน้าผาสูงมีต้นไม้ต้นเดียวออกผลสีทอง กลิ่นหอมจนปราณในกายสั่นไหว ผลไม้แบบนี้ในตำนานเรียกว่า ผลหล่อราก',
+ ch:[
+  {t:'ปีนไปเก็บมากิน',go:()=>{if(luckRoll(.5)){S.root++;note(`รากวิญญาณเลื่อนเป็น ${ROOTS[S.root-1][0]}`,'good');return `น้ำของผลไม้เปลี่ยนเป็นปราณไหลทั่วร่าง รากวิญญาณเลื่อนเป็น ${ROOTS[S.root-1][0]}`}const p=poison(.25,'กินผลไม้พิษจนสิ้นใจ');return p.imm?'ผลไม้เป็นพิษ แต่ร่างของท่านย่อยมันทิ้งโดยไม่เหลือผลใด ๆ':`ผลไม้เป็นพิษ พลังชีวิตหายไป ${p.dmg}`}},
+  {t:'ปล่อยไว้ตามธรรมชาติ',go:()=>'ท่านเงยหน้ามองแล้วเดินกลับ บางสิ่งไม่ควรแตะต้อง'}
+ ]},
+{id:'orphan',title:'เด็กกำพร้า',age:[20,70],w:2,tag:'moral',
+ intro:()=>'เด็กหญิงตัวเล็กนั่งอยู่หน้าประตูท่านตั้งแต่เช้า เสื้อผ้ามอมแมม มือถือก้อนข้าวเย็น ๆ เธอไม่ได้ร้อง แค่มองท่านเฉย ๆ',
+ ch:[
+  {t:'รับเลี้ยงไว้',go:()=>{karma(4);rep(1);S.disciples++;note('รับเด็กกำพร้าเป็นศิษย์','good');return 'ท่านพาเธอเข้าเรือนและให้ข้าวร้อน ๆ ตั้งแต่วันนั้นเรือนของท่านมีเสียงหัวเราะมากขึ้น'}},
+  {t:'ฝากไว้กับสำนักที่ไว้ใจได้',go:()=>{karma(2);rep(2);return 'ท่านพาเธอไปฝากเข้าสำนักที่ไว้ใจได้ แล้วส่งเงินช่วยทุกปีโดยไม่บอกชื่อ'}},
+  {t:'เมินเฉยไปทางอื่น',go:()=>{karma(-2);return 'ท่านเดินผ่านเธอไป หัวใจของท่านไม่ได้เบาลงเลย'}}
+ ]}
+];
+function chooseEvent(a){
+  if(S.pendingTrib){const r=S.pendingTrib;S.pendingTrib=0;return tribEvent(r)}
+  if(S.fate==='demon'&&S.blood>=60&&chance((S.blood-50)/60))return RAMPAGE;
+  const w=a==='wander';
+  if(chance(S.fate==='unlucky'?(w?.26:.17):.02))return{forced:1,run:misfortune};
+  let p=w?.92:.5;if(S.age<8)p=.3;
+  if(!chance(p))return null;
+  const pool=EVENTS.filter(e=>S.age>=e.age[0]&&S.age<=e.age[1]&&!(e.once&&S.flags[e.id])&&(!e.cond||e.cond()));
+  if(!pool.length)return null;
+  const ws=pool.map(e=>{let x=e.w;if(S.fate==='lucky'&&e.tag==='boon')x*=2.2;if(S.fate==='unlucky'){if(e.tag==='boon')x*=.6;if(e.tag==='danger')x*=1.4}if(w&&e.wander)x*=1.8;return x});
+  const ev=pool[wpick(ws)];
+  if(ev.once)S.flags[ev.id]=1;
+  return ev;
+}
+
+/* ---------- การกระทำประจำปี ---------- */
+function runAction(a){
+  if(a==='inner'){
+    const base=(5+S.stats.wit*.8)*(1+S.realm*.45)*(S.age<8?.5:1);
+    const v=gainInner(base);let t=`ท่านนั่งหมุนลมปราณตลอดทั้งปี พลังภายในเพิ่ม ${v}`;
+    if(ROOT_MULT[S.root-1]>=2)t+=' ปราณไหลเข้าสู่ร่างอย่างง่ายดาย';
+    if(S.blood>=40&&chance(S.blood/500)){const d=hit(.05,.1,'ปราณมารย้อนศร');t+=` แต่ปราณมารรบกวน เลือดย้อนในอก พลังชีวิตหายไป ${d}`}
+    return t}
+  if(a.startsWith('skill:')){
+    const k=a.slice(6),sk=S.skills[k];if(!sk)return 'ท่านนั่งนิ่งตลอดปี';
+    const xp=Math.round((12+S.stats.wit)*ROOT_MULT[S.root-1]*rnd(.85,1.15));
+    const inn=gainInner((2+sk.lvl*1.5)*(k==='blood'?1.6:1));
+    let t=`ท่านฝึก${SK[k].n}ตลอดปี ความชำนาญ +${xp} และได้ปราณจากการฝึก +${inn}`;
+    if(k==='blood'){bloodUp(5);karma(-1);t+=' ความกระหายคุกรุ่นขึ้นในอก'}
+    t+=skillXp(k,xp);return t}
+  if(a==='body'){
+    let g=0;if(chance(S.stats.str>=12?.25:.55)){stat('str',1);g=1}
+    S.hp=Math.min(maxHp(),S.hp+Math.round(maxHp()*.15));const v=gainInner(2);
+    return g?`ท่านแบกหินและยกเหล็กจนผิวหนังด้านกร้าน กำลังกายเพิ่ม 1 ปราณ +${v}`:`ท่านฝึกกายจนเหงื่อโชก แต่กำลังยังไม่ขยับขึ้น ปราณ +${v}`}
+  if(a==='wander'){
+    if(chance(.3))rep(1);return 'ท่านเก็บห่อผ้าและท่องไปทั่วแคว้น พบผู้คนมากหน้าหลายตา'}
+  if(a==='rest'){
+    S.hp=Math.min(maxHp(),S.hp+Math.round(maxHp()*.6));S.blood=Math.max(0,S.blood-8);
+    let t='ท่านพักอยู่ในเรือนเงียบ ๆ ตลอดปี บาดแผลสมานไป';
+    if(chance(.25)){stat('wit',1);t+=' และได้อ่านตำราเก่า ปัญญาเพิ่ม 1'}return t}
+  return ''
+}
+function checkDeath(){if(S.hp<=0||S.over){S.over=true;ph='dead';saveBest();return true}return false}
+function doYear(a,auto){
+  const txt=runAction(a);turn.paras.push(auto?`อายุ ${S.age} · ${txt}`:txt);
+  syncRealm();if(checkDeath())return;
+  const ev=chooseEvent(a);
+  if(!ev){if(!auto&&chance(.5))turn.paras.push(pick(QUIET));ph='result';return}
+  if(ev.forced){turn.paras.push(ev.run());syncRealm();if(checkDeath())return;ph='result';return}
+  turn.ev=ev;ph='event';
+}
+function act(a){turn={paras:[],ev:null};ui.pickSkill=false;doYear(a,false)}
+function endYear(){
+  S.age++;const m=maxHp();
+  S.hp=Math.min(m,S.hp+Math.round(m*(.2+(S.skills.heal?S.skills.heal.lvl*.02:0))));
+  if(S.fate==='demon')bloodUp(3);else if(S.blood>0)bloodUp(-2);
+  const life=S.life+S.realm*6;
+  if(S.age>=life){S.over=true;S.cause='สิ้นอายุขัยอย่างสงบ';ph='dead';saveBest();return}
+  ph='focus';turn={paras:[],ev:null};
+}
+function choose(i){
+  const ev=turn.ev,list=ev.ch.filter(c=>(!c.only||c.only===S.fate)&&(!c.cond||c.cond()));
+  const c=list[i];if(!c)return;
+  const k0=S.karma;turn.paras.push('§'+c.t);turn.ev=null;
+  const t=c.go();turn.paras.push(t);
+  const dk=S.karma-k0;note(`${ev.title}: ${c.t}`,dk>0?'good':dk<0?'bad':'');
+  syncRealm();if(checkDeath())return;ph='result';
+}
+function auto(){
+  turn={paras:[],ev:null};ui.pickSkill=false;let n=0;
+  while(n<5&&ph!=='dead'){
+    n++;
+    const ks=Object.keys(S.skills).filter(k=>S.fate==='demon'||k!=='blood');
+    let a;const r=Math.random();
+    if(S.hp<maxHp()*.4)a='rest';else if(r<.45)a='inner';else if(r<.75)a='skill:'+pick(ks);else if(r<.9)a='body';else a='wander';
+    doYear(a,true);
+    if(ph==='event'||ph==='dead')break;
+    if(n<5)endYear();
+    if(ph==='dead')break;
+  }
+  turn.paras=turn.paras.slice(-8);
+}
+
+/* ---------- บันทึก ---------- */
+function saveBest(){try{const b=JSON.parse(localStorage.getItem('jh-best')||'null');if(!b||S.realm>b.realm||(S.realm===b.realm&&S.age>b.age)){localStorage.setItem('jh-best',JSON.stringify({name:S.name,age:S.age,realm:S.realm}))}}catch(e){}}
+function loadBest(){try{return JSON.parse(localStorage.getItem('jh-best')||'null')}catch(e){return null}}
+
+/* ---------- สร้างตัวละคร ---------- */
+function newCreate(){C={name:randName(),mode:{root:'pick',bone:'pick',fate:'pick'},root:3,bone:3,fate:'normal',rolled:{root:null,bone:null,fate:null},stats:{str:3,wit:3,cha:3,luck:3}}}
+const STATN={str:['กำลังกาย','เพิ่มพลังชีวิตและพลังต่อสู้'],wit:['ปัญญา','ฝึกปราณและวิชาได้มากขึ้น แก้ปริศนาได้'],cha:['เสน่ห์','ชนะใจผู้คนและยอดฝีมือ'],luck:['โชค','ทอยลุ้นสิ่งดี ๆ ได้ดีขึ้น']};
+function pool(){let p=14;for(const k of['root','bone']){p+=C.mode[k]==='rand'?5:-COST[C[k]-1]}p+=C.mode.fate==='rand'?4:-FATES[C.fate].cost;for(const k in C.stats)p-=C.stats[k]-3;return p}
+function rollTrait(k){C.rolled[k]=wpick([22,20,17,13,10,7,5,3,2,1])+1}
+function rollFate(){C.rolled.fate=FATE_KEYS[wpick([35,8,17,20,20])]}
+function tierOf(k){return C.mode[k]==='pick'?C[k]:C.rolled[k]}
+function fateOf(){return C.mode.fate==='pick'?C.fate:C.rolled.fate}
+function boneEffect(t){const r=clamp((t-3)*20,0,100);return `พลังชีวิต +${t*13} · ลดความเสียหาย ${t*4}% · ${r>=100?'ภูมิคุ้มกันพิษเด็ดขาด':r>0?`ต้านพิษ ${r}%`:'ไม่ต้านพิษ'}`}
+function rootEffect(t){const m=ROOT_MULT[t-1];return `ฝึกวิชาได้เร็ว ×${m} · ได้พลังภายในจากการฝึกท่า ×${m}`}
+function costTag(c){return c===0?'<span class="cost">ฟรี</span>':c>0?`<span class="cost">−${c} แต้ม</span>`:`<span class="cost neg">+${-c} แต้ม</span>`}
+function segCtl(k){const m=C.mode[k];return `<div class="seg" role="group" aria-label="โหมด"><button data-a="mode" data-k="${k}" data-v="pick" aria-pressed="${m==='pick'}">เลือกเอง</button><button data-a="mode" data-k="${k}" data-v="rand" aria-pressed="${m==='rand'}">สุ่ม +${k==='fate'?4:5} แต้ม</button></div>`}
+function traitBlock(k){
+  const isR=k==='root',T=isR?ROOTS:BONES,title=isR?'รากวิญญาณ':'กระดูกวิญญาณ',sub=isR?'ยิ่งสูง ฝึกวิชาง่ายขึ้น เก็บพลังภายในได้มากขึ้นทั้งตอนฝึกลมปราณและฝึกท่า':'ยิ่งสูง ร่างกายยิ่งแกร่ง ขั้นสูงพอจะกันพิษได้ทุกชนิด';
+  const t=tierOf(k);let body='';
+  if(C.mode[k]==='pick'){
+    body=`<div class="pips" role="radiogroup" aria-label="${title}">${[...Array(10)].map((_,i)=>`<button id="p-${k}-${i+1}" role="radio" aria-checked="${t===i+1}" class="${i+1<t?'on':''} ${i+1===t?'sel':''}" data-a="tier" data-k="${k}" data-v="${i+1}">${i+1}</button>`).join('')}</div>`;
+  }
+  const rolled=C.mode[k]==='rand'?`<div class="rolled small">ฟ้าลิขิตให้ท่านได้ <b>ขั้น ${t}</b> (ได้ +5 แต้มเก็บไว้อัปตัว)</div>`:'';
+  return `<section class="panel stack"><div class="row" style="justify-content:space-between"><div><h3>${title}</h3><p class="muted small" style="margin:2px 0 0">${sub}</p></div>${segCtl(k)}</div>${body}${rolled}
+  <div><div class="row"><b style="font-family:var(--f-display);font-weight:400">ขั้น ${t} · ${T[t-1][0]}</b>${C.mode[k]==='pick'?costTag(COST[t-1]):''}</div><div class="muted small">${T[t-1][1]}</div><div class="small" style="color:var(--jade)">${isR?rootEffect(t):boneEffect(t)}</div></div></section>`;
+}
+function fateBlock(){
+  const f=fateOf();let body='';
+  if(C.mode.fate==='pick'){body=`<div class="fates">${FATE_KEYS.map(k=>{const F=FATES[k];return `<button id="f-${k}" class="fate" data-a="fate" data-v="${k}" aria-pressed="${C.fate===k}"><span class="row" style="justify-content:space-between"><span class="seal" style="color:var(${F.c})">${F.s}</span>${costTag(F.cost)}</span><b style="font-family:var(--f-display);font-weight:400">${F.n}</b><span class="muted small">${F.d}</span></button>`}).join('')}</div>`}
+  else{const F=FATES[f];body=`<div class="rolled"><span class="seal" style="color:var(${F.c})">${F.s}</span> <b style="font-family:var(--f-display);font-weight:400">${F.n}</b><div class="muted small" style="margin-top:6px">${F.d}</div><div class="small" style="margin-top:6px;color:var(--gold)">ฟ้าลิขิตให้ท่านแล้ว ได้ +4 แต้มเก็บไว้อัปตัว</div></div>`}
+  return `<section class="panel stack"><div class="row" style="justify-content:space-between"><div><h3>ชะตาตอนเกิด</h3><p class="muted small" style="margin:2px 0 0">ฟ้าขีดเส้นทางไว้ ทั้งโชคดี โชคร้าย และสิ่งที่ซ่อนอยู่ในเลือด</p></div>${segCtl('fate')}</div>${body}</section>`;
+}
+function statsBlock(){
+  return `<section class="panel stack"><div><h3>คุณสมบัติพื้นฐาน</h3><p class="muted small" style="margin:2px 0 0">ใช้แต้มกำเนิดเพิ่มได้ หรือลดเพื่อเอาแต้มคืน</p></div><div class="stats">${Object.keys(STATN).map(k=>`<div class="stat"><div class="n"><b>${STATN[k][0]}</b><div class="muted small">${STATN[k][1]}</div></div><div class="ctl"><button id="s-${k}-m" data-a="stat" data-k="${k}" data-v="-1" aria-label="ลด${STATN[k][0]}">−</button><output>${C.stats[k]}</output><button id="s-${k}-p" data-a="stat" data-k="${k}" data-v="1" aria-label="เพิ่ม${STATN[k][0]}">+</button></div></div>`).join('')}</div></section>`;
+}
+function renderCreate(fid){
+  const p=pool(),b=loadBest();
+  $('app').innerHTML=`<div class="stack">
+  <section class="panel"><label class="f" for="nm">ชื่อของท่าน</label><div class="row"><input id="nm" type="text" maxlength="14" value="${esc(C.name)}" autocomplete="off"><button class="btn" data-a="rname">สุ่มชื่อ</button></div></section>
+  <div class="pool ${p<0?'neg':''}"><span class="muted">แต้มกำเนิดที่เหลือ ${p<0?'(ไม่พอ ลดบางอย่างก่อน)':''}</span><b>${p}</b></div>
+  ${traitBlock('root')}${traitBlock('bone')}${fateBlock()}${statsBlock()}
+  <div class="row"><button class="btn pri" data-a="begin" ${p<0?'disabled':''}>ก้าวสู่ยุทธภพ</button>${b?`<span class="muted small">ชีวิตที่ไปไกลที่สุด: ${esc(b.name)} ถึงขั้น${REALMS[b.realm][0]} อายุ ${b.age} ปี</span>`:''}</div></div>`;
+  if(fid){const el=$(fid);if(el)el.focus()}
+}
+
+/* ---------- เริ่มชีวิต ---------- */
+function begin(){
+  const root=tierOf('root'),bone=tierOf('bone'),fate=fateOf();
+  S={name:C.name.trim()||randName(),stats:{...C.stats},root,bone,fate,age:6,hp:0,inner:0,realm:0,skills:{fist:{lvl:1,xp:0}},rep:0,karma:0,blood:0,flags:{},chron:[],kills:0,bonusHp:0,life:46+ri(0,14)+bone*2,over:false,cause:'',pendingTrib:0,disciples:0,partner:null};
+  S.hp=maxHp();
+  const bornText={normal:'ท่านเกิดในเช้าธรรมดาของหมู่บ้านเล็ก ๆ ไก่ขันตามปกติ ไม่มีลางใด ๆ ปรากฏ',lucky:'วันที่ท่านลืมตา ดาวดวงหนึ่งสว่างผิดปกติกลางวันแสก ๆ หมอตำแยพูดเบา ๆ ว่าเด็กคนนี้มีวาสนา',guardian:'นกกระเรียนขาวสิบตัวบินผ่านหลังคาเรือนในวันที่ท่านเกิด ผู้เฒ่าในหมู่บ้านต่างก้มลงพนมมือ',unlucky:'คืนที่ท่านเกิด ฟ้าผ่าต้นไทรหน้าบ้านจนไหม้เป็นตอตะโกน หมอตำแยทำท่าจะเอ่ยอะไรบางอย่าง แล้วเลือกที่จะเงียบ',demon:'ในคืนที่ท่านร้องไห้ครั้งแรก พระจันทร์เป็นสีแดงเข้ม สุนัขทั้งหมู่บ้านหอนไม่หยุด และไม่มีใครกล้าบอกพ่อแม่ว่าเพราะอะไร'}[fate];
+  note(`เกิดมาพร้อม ${ROOTS[root-1][0]} · ${BONES[bone-1][0]} · ${FATES[fate].n}`);
+  turn={paras:[bornText,'ปีที่หกของท่าน ผู้ใหญ่บ้านสอนหมัดพื้นฐานให้เด็ก ๆ ทั้งหมู่บ้าน เส้นทางจากนี้ขึ้นอยู่กับท่านแล้ว'],ev:null};
+  ph='focus';ui.pickSkill=false;
+}
+
+/* ---------- แสดงผลเกม ---------- */
+function bar(label,val,max,color,txt){return `<div class="barrow"><span class="muted">${label}</span><div class="bar" role="img" aria-label="${label} ${txt}"><i style="--w:${clamp(val/max*100,0,100)}%;--c:var(${color})"></i></div><span class="num">${txt}</span></div>`}
+function pipsMini(l){return `<span class="mini">${[...Array(10)].map((_,i)=>`<i class="${i<l?'on':''}"></i>`).join('')}</span>`}
+function epitaph(){const base=['ชาวบ้านสามัญ','ศิษย์ฝึกหัด','นักยุทธ์พเนจร','ยอดฝีมือท้องถิ่น','ผู้เชี่ยวชาญด้านกาย','ปรมาจารย์สำนัก','ปรมาจารย์ผู้ลือนาม','จอมยุทธ์หลอมวิญญาณ','จอมยุทธ์ไร้เทียมทาน','ตำนานเหนือยุค'][S.realm];const pre=S.karma<=-40?'จอมมาร ':S.karma>=40?'ผู้ทรงธรรม ':'';return pre+base}
+function renderGame(){
+  const m=maxHp(),lo=REALMS[S.realm][1],hi=REALMS[S.realm+1]?REALMS[S.realm+1][1]:S.inner;
+  const innerTxt=REALMS[S.realm+1]?`${S.inner}/${hi}`:`${S.inner}`;
+  const F=FATES[S.fate];
+  let main='';
+  const paras=turn.paras.map(p=>p.startsWith('§')?`<p class="pick">▸ ท่านเลือก: ${esc(p.slice(1))}</p>`:`<p class="${ph==='focus'&&turn.paras.length?'':''}">${esc(p)}</p>`).join('');
+  if(ph==='dead'){
+    const top=S.chron.filter(c=>c.kind).slice(-8).reverse();
+    main=`<div class="panel end"><p class="eyebrow">จบชีวิต</p><h2>${esc(S.name)} ${epitaph()}</h2><p class="cause">${esc(S.cause||'สิ้นลมอย่างเงียบงัน')} เมื่ออายุ ${S.age} ปี</p>
+    <div class="prose">${paras}</div>
+    <div class="sum"><div><b>${realmName()}</b>ขั้นสูงสุด</div><div><b>${S.age}</b>อายุ (ปี)</div><div><b>${S.rep}</b>ชื่อเสียง</div><div><b>${S.karma>0?'+':''}${S.karma}</b>บุญบาป</div><div><b>${S.kills}</b>ชีวิตที่พรากไป</div></div>
+    ${top.length?`<h3 style="margin-bottom:6px">เรื่องเด่นในชีวิต</h3><ul class="chron" style="max-height:none">${top.map(c=>`<li class="${c.kind}"><b>${c.age} ปี</b><span>${esc(c.text)}</span></li>`).join('')}</ul>`:''}
+    <div class="row" style="margin-top:16px"><button class="btn pri" data-a="again">เกิดใหม่อีกครั้ง</button></div></div>`;
+  }else if(ph==='focus'){
+    const left=S.life+S.realm*6-S.age;
+    const skills=Object.keys(S.skills);
+    main=`<div class="panel story"><div class="head"><h2>อายุ ${S.age} ปี</h2><span class="muted small">${left<=5?'เส้นผมเริ่มเป็นสีเงิน':''}</span></div>
+    ${turn.paras.length?`<div class="prose">${paras}</div>`:''}
+    <p class="muted" style="margin:0 0 4px">ปีนี้ท่านจะทำอะไร</p>
+    <div class="actions">
+     <button class="act" data-a="act" data-v="inner"><b>ฝึกลมปราณ</b><span>สะสมพลังภายใน ขึ้นกับปัญญาและราก</span></button>
+     <button class="act" data-a="skillmenu"><b>ฝึกท่า</b><span>ฝึกวิชาที่มี ได้ปราณจากการฝึกด้วย</span></button>
+     <button class="act" data-a="act" data-v="body"><b>ฝึกกาย</b><span>เพิ่มกำลังกาย และเยียวยาเล็กน้อย</span></button>
+     <button class="act" data-a="act" data-v="wander"><b>ท่องยุทธภพ</b><span>พบเหตุการณ์มากขึ้น เสี่ยงและได้มากขึ้น</span></button>
+     <button class="act" data-a="act" data-v="rest"><b>พักฟื้น</b><span>ฟื้นพลังชีวิต ลดความกระหายเลือด</span></button>
+     <button class="act" data-a="auto"><b>ปล่อยชะตา</b><span>ผ่านไปสูงสุด 5 ปี หยุดเมื่อต้องตัดสินใจ</span></button>
+    </div>
+    ${ui.pickSkill?`<div class="skillrow">${skills.map(k=>`<button class="sk btn" data-a="act" data-v="skill:${k}" style="text-align:left"><span class="nm">${SK[k].n}</span>${pipsMini(S.skills[k].lvl)}<span class="num">ขั้น ${S.skills[k].lvl}</span></button>`).join('')}</div>`:''}
+    </div>`;
+  }else if(ph==='event'){
+    const ev=turn.ev,list=ev.ch.filter(c=>(!c.only||c.only===S.fate)&&(!c.cond||c.cond()));
+    main=`<div class="panel story"><div class="head"><h2>${esc(ev.title)}</h2><span class="muted small">อายุ ${S.age} ปี</span></div>
+    ${turn.paras.length?`<div class="prose">${paras}</div>`:''}
+    <div class="prose"><p class="intro">${esc(ev.intro())}</p></div>
+    <div class="choices">${list.map((c,i)=>`<button class="choice" data-a="choice" data-v="${i}">${c.only?`<span class="chip ${c.only}">${c.only==='demon'?'มาร':'ธรรม'}</span>`:''}<span>${esc(c.t)}</span></button>`).join('')}</div></div>`;
+  }else{
+    main=`<div class="panel story"><div class="head"><h2>ผลที่ตามมา</h2><span class="muted small">อายุ ${S.age} ปี</span></div>
+    <div class="prose">${paras}</div><div class="row"><button class="btn pri" data-a="next">ก้าวสู่ปีถัดไป</button></div></div>`;
+  }
+  const gprog=S.karma/100*50+50;
+  const sideSk=Object.keys(S.skills).map(k=>`<div class="row" style="justify-content:space-between;flex-wrap:nowrap"><span style="min-width:0;overflow-wrap:anywhere">${SK[k].n}</span>${pipsMini(S.skills[k].lvl)}</div>`).join('');
+  const chron=S.chron.slice(-30).reverse().map(c=>`<li class="${c.kind}"><b>${c.age} ปี</b><span>${esc(c.text)}</span></li>`).join('');
+  $('app').innerHTML=`<div class="panel topbar"><div class="who"><h2>${esc(S.name)}</h2><div class="muted small">อายุ ${S.age} ปี · ขั้น${realmName()}</div></div>
+  <div class="bars">${bar('พลังชีวิต',S.hp,m,'--hp',`${S.hp}/${m}`)}${bar('พลังภายใน',S.inner-lo,Math.max(1,hi-lo),'--gold',innerTxt)}${(S.fate==='demon'||S.blood>0)?bar('กระหายเลือด',S.blood,100,'--blood',`${S.blood}`):''}</div></div>
+  <div class="layout"><div class="story" id="story">${main}</div>
+  <aside class="side">
+   <section class="panel"><h3>ทุนติดตัว</h3><div class="kv"><span>รากวิญญาณ ขั้น ${S.root}</span><span class="num">×${ROOT_MULT[S.root-1]}</span><span class="t">${ROOTS[S.root-1][0]}</span><span>กระดูกวิญญาณ ขั้น ${S.bone}</span><span class="num">${poisonRes()>=1?'กันพิษ':`ต้านพิษ ${Math.round(poisonRes()*100)}%`}</span><span class="t">${BONES[S.bone-1][0]}</span></div>
+   <div class="row" style="margin-top:8px"><span class="seal" style="color:var(${F.c})">${F.s}</span><span class="small">${F.n}</span></div></section>
+   <section class="panel"><h3>คุณสมบัติ</h3><div class="sgrid"><div><span>กำลัง</span><b>${S.stats.str}</b></div><div><span>ปัญญา</span><b>${S.stats.wit}</b></div><div><span>เสน่ห์</span><b>${S.stats.cha}</b></div><div><span>โชค</span><b>${S.stats.luck}</b></div></div>
+   <div class="karma" role="img" aria-label="บุญบาป ${S.karma}"><i style="--x:${gprog}%"></i></div><div class="row small muted" style="justify-content:space-between"><span>บาป</span><span>ชื่อเสียง ${S.rep}</span><span>บุญ</span></div>
+   ${S.flags.sect?`<p class="small muted" style="margin:8px 0 0">สำนัก: ${S.flags.sect}</p>`:''}${S.partner?`<p class="small muted" style="margin:4px 0 0">คู่ชีวิต: ${esc(S.partner)}</p>`:''}</section>
+   <section class="panel"><h3>วิชา</h3><div class="stack" style="gap:8px">${sideSk}</div></section>
+   <section class="panel"><details open><summary>บันทึกชีวิต</summary><ul class="chron">${chron}</ul></details></section>
+  </aside></div>`;
+}
+function render(fid){if(ph==='create')renderCreate(fid);else renderGame()}
+
+/* ---------- ควบคุม ---------- */
+document.addEventListener('input',e=>{if(e.target&&e.target.id==='nm'&&C)C.name=e.target.value});
+document.addEventListener('click',e=>{
+  const b=e.target.closest&&e.target.closest('[data-a]');if(!b||b.disabled)return;
+  const a=b.dataset.a,k=b.dataset.k,v=b.dataset.v;let fid='';
+  if(ph==='create'){
+    if(a==='mode'){C.mode[k]=v;if(v==='rand'&&!C.rolled[k]){k==='fate'?rollFate():rollTrait(k)}fid=null}
+    else if(a==='tier'){C[k]=+v;fid=`p-${k}-${v}`}
+    else if(a==='fate'){C.fate=v;fid='f-'+v}
+    else if(a==='stat'){const n=clamp(C.stats[k]+ +v,1,12);C.stats[k]=n;fid=`s-${k}-${+v>0?'p':'m'}`}
+    else if(a==='rname'){C.name=randName()}
+    else if(a==='begin'){if(pool()<0)return;begin();render();return}
+    render(fid||undefined);return;
+  }
+  if(a==='act'&&ph==='focus')act(v);
+  else if(a==='skillmenu'&&ph==='focus'){ui.pickSkill=!ui.pickSkill}
+  else if(a==='auto'&&ph==='focus')auto();
+  else if(a==='choice'&&ph==='event')choose(+v);
+  else if(a==='next'&&ph==='result')endYear();
+  else if(a==='again'){newCreate();ph='create';S=null}
+  else return;
+  render();
+  if(window.innerWidth<820&&ph!=='create'){const s=$('story');if(s&&s.scrollIntoView)s.scrollIntoView({block:'start'})}
+});
+newCreate();renderCreate();
+</script>
+<script>if('serviceWorker' in navigator&&location.protocol.startsWith('http')){navigator.serviceWorker.register('sw.js').catch(function(){})}</script>
+</body></html>
