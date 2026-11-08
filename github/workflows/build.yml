@@ -1,0 +1,90 @@
+name: Build APK
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create Android project
+        run: |
+          set -e
+          P=proj
+          mkdir -p $P/app/src/main/assets $P/app/src/main/res/mipmap-xxxhdpi $P/app/src/main/res/values $P/app/src/main/java/com/fahpha/game
+          cp index.html $P/app/src/main/assets/index.html
+          if ls *.webp >/dev/null 2>&1; then cp "$(ls *.webp | head -1)" $P/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp; else cp icon-512.png $P/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png; fi
+          cat > $P/settings.gradle <<'EOT'
+          pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+          dependencyResolutionManagement { repositories { google(); mavenCentral() } }
+          rootProject.name = 'FahPha'
+          include ':app'
+          EOT
+          cat > $P/build.gradle <<'EOT'
+          plugins { id 'com.android.application' version '8.5.2' apply false }
+          EOT
+          cat > $P/gradle.properties <<'EOT'
+          android.useAndroidX=true
+          org.gradle.jvmargs=-Xmx2g
+          EOT
+          cat > $P/app/build.gradle <<'EOT'
+          plugins { id 'com.android.application' }
+          android {
+            namespace 'com.fahpha.game'
+            compileSdk 34
+            defaultConfig { applicationId 'com.fahpha.game'; minSdk 24; targetSdk 34; versionCode 1; versionName '1.0' }
+            compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+          }
+          EOT
+          cat > $P/app/src/main/AndroidManifest.xml <<'EOT'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+            <uses-permission android:name="android.permission.INTERNET"/>
+            <application android:label="ฟ้าผ่าอีกแล้ว" android:icon="@mipmap/ic_launcher" android:theme="@style/AppTheme">
+              <activity android:name=".MainActivity" android:exported="true" android:configChanges="orientation|screenSize|keyboardHidden">
+                <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+              </activity>
+            </application>
+          </manifest>
+          EOT
+          cat > $P/app/src/main/res/values/styles.xml <<'EOT'
+          <resources><style name="AppTheme" parent="android:Theme.Material.NoActionBar"><item name="android:windowBackground">#0C1312</item><item name="android:statusBarColor">#0C1312</item><item name="android:navigationBarColor">#0C1312</item></style></resources>
+          EOT
+          cat > $P/app/src/main/java/com/fahpha/game/MainActivity.java <<'EOT'
+          package com.fahpha.game;
+          import android.app.Activity;
+          import android.graphics.Color;
+          import android.os.Bundle;
+          import android.webkit.WebSettings;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
+          public class MainActivity extends Activity {
+            private WebView web;
+            @Override protected void onCreate(Bundle b) {
+              super.onCreate(b);
+              web = new WebView(this);
+              web.setBackgroundColor(Color.parseColor("#0C1312"));
+              WebSettings s = web.getSettings();
+              s.setJavaScriptEnabled(true);
+              s.setDomStorageEnabled(true);
+              web.setWebViewClient(new WebViewClient());
+              setContentView(web);
+              web.loadUrl("file:///android_asset/index.html");
+            }
+          }
+          EOT
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+      - name: Build
+        working-directory: proj
+        run: gradle assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fahpha-apk
+          path: proj/app/build/outputs/apk/debug/app-debug.apk
